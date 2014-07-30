@@ -1,0 +1,20 @@
+<LinearLayout
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:id="@+id/activity_main"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <TextView
+        android:text="@string/tv_latest_news_head"
+        android:id="@+id/tv_latest_news_head"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/lv_main" />
+
+</LinearLayout>

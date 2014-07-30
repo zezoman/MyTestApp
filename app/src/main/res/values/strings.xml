@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">MyTestApp</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="btn_manage_feeds">Manage Feeds</string>
+    <string name="title_activity_feed">FeedActivity</string>
+    <string name="btn_add_feed">Add feed</string>
+    <string name="feed_dialog_add_title">Add new feed address:</string>
+    <string name="feed_dialog_delete_title">Delete this feed address?</string>
+    <string name="feed_dialog_btn_ok">OK</string>
+    <string name="feed_dialog_btn_cancel">Cancel</string>
+    <string name="feed_dialog_add_success_msg">Successfully added new feed url!</string>
+    <string name="feed_dialog_failed_msg">Operation failed!</string>
+    <string name="feed_dialog_non_empty_msg">Feed URL cannot be empty!</string>
+    <string name="feed_dialog_delete_success_msg">Successfully deleted the feed URL!</string>
+    <string name="btn_refresh_feeds">Refresh</string>
+    <string name="tv_latest_news_head">No News Available</string>
+    <string name="prd_title_main">Refreshing feeds...</string>
+    <string name="prd_message_main">Please wait!</string>
+    <string name="title_activity_one">One</string>
+    <string name="title_activity_second">Second</string>
+
+</resources>
