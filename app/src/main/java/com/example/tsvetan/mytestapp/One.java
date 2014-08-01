@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 
 public class One extends Activity {
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,6 +32,7 @@ public class One extends Activity {
                     .add(R.id.container, new PlaceholderFragment())
                     .commit();
         }
+
     }
 
 
@@ -61,8 +64,10 @@ public class One extends Activity {
         TextView textView;
         MyLocationListener myLocList;
         LocationManager lm;
+        private SharedPreferences prefs = null;
 
         public PlaceholderFragment() {
+
         }
 
         @Override
@@ -75,6 +80,7 @@ public class One extends Activity {
             textView = (TextView) rootView.findViewById(R.id.tv_result_one);
             myLocList = new MyLocationListener();
             lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+            prefs = getActivity().getSharedPreferences("datapack", MODE_PRIVATE);
             return rootView;
         }
 
@@ -82,6 +88,17 @@ public class One extends Activity {
         public void onResume() {
             super.onResume();
             lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1000, myLocList);
+            String value = prefs.getString("editText", "");
+            editText.setText(value);
+        }
+
+        @Override
+        public void onPause() {
+            super.onPause();
+            String value = editText.getText().toString();
+            SharedPreferences.Editor prefsEditor = prefs.edit();
+            prefsEditor.putString("editText", value);
+            prefsEditor.commit();
         }
 
         @Override
