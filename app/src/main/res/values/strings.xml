@@ -21,5 +21,6 @@
     <string name="prd_message_main">Please wait!</string>
     <string name="title_activity_one">One</string>
     <string name="title_activity_second">Second</string>
+    <string name="title_activity_http_client">HttpClientActivity</string>
 
 </resources>

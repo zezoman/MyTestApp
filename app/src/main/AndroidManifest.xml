@@ -4,7 +4,8 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-
+    <uses-permission android:name="android.permission.read_external_storage" />
+    <uses-permission android:name="android.permission.write_external_storage" />
 
     <application
         android:name=".MyApplication"
@@ -39,6 +40,11 @@
             android:enabled="true"
             android:exported="true" >
         </service>
+
+        <activity
+            android:name=".HttpClientActivity"
+            android:label="@string/title_activity_http_client" >
+        </activity>
     </application>
 
 </manifest>

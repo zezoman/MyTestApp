@@ -19,4 +19,8 @@
         android:title="One"
         android:orderInCategory="80"
         android:showAsAction="never"/>
+    <item android:id="@+id/btn_httpclient"
+        android:title="HttpClient"
+        android:orderInCategory="70"
+        android:showAsAction="never"/>
 </menu>
