@@ -1,7 +1,6 @@
 package com.example.tsvetan.mytestapp;
 
 import android.app.Activity;
-import android.app.ActionBar;
 import android.app.Fragment;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -11,19 +10,24 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.os.Build;
 import android.widget.Button;
-
-import com.example.tsvetan.mytestapp.R;
+import android.widget.TextView;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class HttpClientActivity extends Activity {
     private static final String TAG = "HttpClientActivity";
@@ -64,6 +68,9 @@ public class HttpClientActivity extends Activity {
      */
     public static class PlaceholderFragment extends Fragment implements View.OnClickListener {
         Button doGetBtn;
+        Button doPostBtn;
+        TextView tvResponse;
+
         public PlaceholderFragment() {
         }
 
@@ -73,13 +80,22 @@ public class HttpClientActivity extends Activity {
             View rootView = inflater.inflate(R.layout.fragment_http_client, container, false);
             doGetBtn = (Button)rootView.findViewById(R.id.btn_doget_httpactivity);
             doGetBtn.setOnClickListener(this);
+            doPostBtn = (Button)rootView.findViewById(R.id.btn_dopost_httpactivity);
+            doPostBtn.setOnClickListener(this);
+            tvResponse = (TextView) rootView.findViewById(R.id.tv_httpclient);
             return rootView;
         }
 
         @Override
         public void onClick(View v) {
-            TestGet task = new TestGet();
-            task.execute("http://google.com");
+            if (v.getId() == doGetBtn.getId()){
+                TestGet task = new TestGet();
+                task.execute("http://google.com");
+            } else if(v.getId() == doPostBtn.getId()){
+                TestPost task = new TestPost();
+                task.execute("http://google.com");
+            }
+
         }
 
         private class TestGet extends AsyncTask<String, Void, Void>{
@@ -97,9 +113,54 @@ public class HttpClientActivity extends Activity {
                     while( (chunk = br.readLine()) != null ){
                         sb.append(chunk);
                     }
-                    Log.d(TAG, sb.toString());
+                    tvResponse.setText(sb.toString());
+                    Log.d(TAG, "Received GET response successfully.");
                 } catch (IOException e) {
                     e.printStackTrace();
+                    Log.e(TAG, "Error receiving GET response.");
+                } finally {
+                    if (br!=null){
+                        try {
+                            br.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                return null;
+            }
+        }
+
+        private class TestPost extends AsyncTask<String, Void, Void>{
+
+            @Override
+            protected Void doInBackground(String... params) {
+                HttpClient client = new DefaultHttpClient();
+                HttpPost post = new HttpPost(params[0]);
+                post.addHeader("Content-Type", "application/x-www-form-urlencoded");
+                List<NameValuePair> postParams = new ArrayList();
+                postParams.add(new BasicNameValuePair("q", "proba"));
+                try {
+                    post.setEntity(new UrlEncodedFormEntity(postParams));
+
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                    return null;
+                }
+                BufferedReader br = null;
+                try {
+                    HttpResponse resp = client.execute(post);
+                    br = new BufferedReader(new InputStreamReader(resp.getEntity().getContent()));
+                    StringBuilder sb = new StringBuilder();
+                    String chunk = null;
+                    while( (chunk = br.readLine()) != null ){
+                        sb.append(chunk);
+                    }
+                    tvResponse.setText(sb.toString());
+                    Log.d(TAG, "Received POST response successfully.");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Log.e(TAG, "Error receiving POST response.");
                 } finally {
                     if (br!=null){
                         try {

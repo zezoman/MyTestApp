@@ -16,4 +16,28 @@
         android:id="@+id/btn_doget_httpactivity"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Do POST"
+        android:id="@+id/btn_dopost_httpactivity"
+        android:layout_alignTop="@+id/btn_doget_httpactivity"
+        android:layout_alignParentEnd="true" />
+
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/scrollView"
+        android:layout_below="@+id/btn_doget_httpactivity"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="44dp" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_httpclient"
+            android:hint="Response:" />
+    </ScrollView>
+
 </RelativeLayout>
