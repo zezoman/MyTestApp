@@ -99,6 +99,7 @@ public class HttpClientActivity extends Activity {
         }
 
         private class TestGet extends AsyncTask<String, Void, Void>{
+            private StringBuilder sb;
 
             @Override
             protected Void doInBackground(String... params) {
@@ -108,12 +109,12 @@ public class HttpClientActivity extends Activity {
                 try {
                     HttpResponse resp = client.execute(get);
                     br = new BufferedReader(new InputStreamReader(resp.getEntity().getContent()));
-                    StringBuilder sb = new StringBuilder();
+                    sb = new StringBuilder();
                     String chunk = null;
                     while( (chunk = br.readLine()) != null ){
                         sb.append(chunk);
                     }
-                    tvResponse.setText(sb.toString());
+
                     Log.d(TAG, "Received GET response successfully.");
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -129,9 +130,16 @@ public class HttpClientActivity extends Activity {
                 }
                 return null;
             }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                tvResponse.setText(sb.toString());
+            }
         }
 
         private class TestPost extends AsyncTask<String, Void, Void>{
+            private StringBuilder sb;
 
             @Override
             protected Void doInBackground(String... params) {
@@ -151,12 +159,12 @@ public class HttpClientActivity extends Activity {
                 try {
                     HttpResponse resp = client.execute(post);
                     br = new BufferedReader(new InputStreamReader(resp.getEntity().getContent()));
-                    StringBuilder sb = new StringBuilder();
+                    sb = new StringBuilder();
                     String chunk = null;
                     while( (chunk = br.readLine()) != null ){
                         sb.append(chunk);
                     }
-                    tvResponse.setText(sb.toString());
+
                     Log.d(TAG, "Received POST response successfully.");
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -171,6 +179,12 @@ public class HttpClientActivity extends Activity {
                     }
                 }
                 return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                tvResponse.setText(sb.toString());
             }
         }
     }
