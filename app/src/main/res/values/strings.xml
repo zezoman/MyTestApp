@@ -22,5 +22,6 @@
     <string name="title_activity_one">One</string>
     <string name="title_activity_second">Second</string>
     <string name="title_activity_http_client">HttpClientActivity</string>
+    <string name="title_activity_test_google_apis">TestGoogleAPIsActivity</string>
 
 </resources>
