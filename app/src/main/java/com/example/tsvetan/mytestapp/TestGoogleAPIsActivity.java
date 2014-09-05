@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -27,7 +28,9 @@ public class TestGoogleAPIsActivity extends Activity implements GoogleApiClient.
     // Unique tag for the error dialog fragment
     private static final String DIALOG_ERROR = "dialog_error";
     // Bool to track whether the app is already resolving an error
-    private boolean mResolvingError = false;
+    private static boolean mResolvingError = false;
+    // track resolving attempts across activity restarts (e.g. when phone is rotated while the error dialog is displayed)
+    private static final String STATE_RESOLVING_ERROR = "resolving_error";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +42,9 @@ public class TestGoogleAPIsActivity extends Activity implements GoogleApiClient.
                     .commit();
         }
 
-        //You can add multiple APIs and multiple scopes to the same GoogleApiClient by appending
+        mResolvingError = savedInstanceState != null && savedInstanceState.getBoolean(STATE_RESOLVING_ERROR, false);
+
+        // You can add multiple APIs and multiple scopes to the same GoogleApiClient by appending
         // additional calls to addApi() and addScope().
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Drive.API)
@@ -48,8 +53,14 @@ public class TestGoogleAPIsActivity extends Activity implements GoogleApiClient.
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(STATE_RESOLVING_ERROR, mResolvingError);
+    }
+
+    @Override
     protected void onStart() {
-        //To gracefully manage the lifecycle of the connection, you should call connect() during
+        // To gracefully manage the lifecycle of the connection, you should call connect() during
         // the activity's onStart() (unless you want to connect later), then call disconnect()
         // during the onStop() method.
         super.onStart();
@@ -129,34 +140,49 @@ public class TestGoogleAPIsActivity extends Activity implements GoogleApiClient.
         Bundle args = new Bundle();
         args.putInt(DIALOG_ERROR, errorCode);
         dialogFragment.setArguments(args);
-        dialogFragment.show(getSupportFragmentManager(), "errordialog");
+        dialogFragment.show(getFragmentManager(), "errordialog");
     }
 
     /* Called from ErrorDialogFragment when the dialog is dismissed. */
-    public void onDialogDismissed() {
+    public static void onDialogDismissed() {
         mResolvingError = false;
     }
 
     /* A fragment to display an error dialog */
+    // Fragment inner classes must be static:
+    // http://stackoverflow.com/questions/15571010/fragment-inner-class-should-be-static
     public static class ErrorDialogFragment extends DialogFragment {
-        public ErrorDialogFragment() { }
+        public ErrorDialogFragment() {
+        }
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             // Get the error code and retrieve the appropriate dialog
             int errorCode = this.getArguments().getInt(DIALOG_ERROR);
-            return GooglePlayServicesUtil.getErrorDialog(errorCode,
-                    this.getActivity(), REQUEST_RESOLVE_ERROR);
+            return GooglePlayServicesUtil.getErrorDialog(errorCode, this.getActivity(), REQUEST_RESOLVE_ERROR);
         }
 
         @Override
         public void onDismiss(DialogInterface dialog) {
-            ((MainActivity)getActivity()).onDialogDismissed();
+            TestGoogleAPIsActivity.onDialogDismissed();
         }
     }
 
     //=====================================================================================
 
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_RESOLVE_ERROR) {
+            mResolvingError = false;
+            if (resultCode == RESULT_OK) {
+                // Make sure the app is not already connected or attempting to connect
+                if (!mGoogleApiClient.isConnecting() && !mGoogleApiClient.isConnected()) {
+                    mGoogleApiClient.connect();
+                }
+            }
+        }
+    }
 
     /**
      * A placeholder fragment containing a simple view.
