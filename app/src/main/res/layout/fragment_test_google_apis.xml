@@ -9,7 +9,8 @@
     tools:context="com.example.tsvetan.mytestapp.TestGoogleAPIsActivity$PlaceholderFragment">
 
     <TextView
-        android:text="@string/hello_world"
+        android:id="@+id/tv_fragment_google_apis"
+        android:text="@string/waiting_for_drive_result"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
