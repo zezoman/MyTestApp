@@ -3,6 +3,7 @@
 /.idea/workspace.xml
 .DS_Store
 /build
+.idea/**
 .idea/gradle.xml
 .idea/libraries/appcompat_v7_22_1_1.xml
 .idea/libraries/support_annotations_22_1_1.xml
